@@ -183,21 +183,27 @@
             id="navbarCollapse"
           >
             <div class="navbar-nav mr-auto py-0">
-              <a href="index.html" class="nav-item nav-link active">Home</a>
-              <a href="shop.html" class="nav-item nav-link">Shop</a>
-              <a href="detail.html" class="nav-item nav-link">Shop Detail</a>
-              <div class="nav-item dropdown">
-                <a
-                  href="#"
-                  class="nav-link dropdown-toggle"
-                  data-toggle="dropdown"
-                  >Pages <i class="fa fa-angle-down mt-1"></i
-                ></a>
-                <div class="dropdown-menu bg-primary rounded-0 border-0 m-0">
-                  <a href="cart.html" class="dropdown-item">Shopping Cart</a>
-                  <a href="checkout.html" class="dropdown-item">Checkout</a>
-                </div>
-              </div>
+              <template v-if="categoryList">
+                <span v-for="category in categoryList" :key="category.id">
+
+                  <a href="index.html"  v-show="!category.child.length" class="nav-item nav-link">{{category.name}}</a>             
+              
+                  <div class="nav-item dropdown" v-if="category.child.length > 0">
+                    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" >{{category.name}} <i class="fa fa-angle-down mt-1"></i
+                    ></a>
+                    <div class="dropdown-menu bg-primary rounded-0 border-0 m-0">
+                    <span v-for="childList in category.child" :key="childList.id">
+                      <router-link class="dropdown-item" :to="{
+                        name: 'category',
+                        params: { name: childList.slug },
+                        }">{{childList.name}}</router-link>                       
+                    </span>
+                      
+                    </div>
+                  </div>
+               </span>
+              </template>
+
               <a href="contact.html" class="nav-item nav-link">Contact</a>
             </div>
             <div class="navbar-nav ml-auto py-0 d-none d-lg-block">
@@ -237,12 +243,14 @@
 </template>
 <script>
 import LoginModal from "./Modals/LoginModal.vue";
+import axios from 'axios';
 export default {
   name: "NabarComponent",
   data() {
     return {
       showModal: false,
-      loggedId: false
+      loggedId: false,
+      categoryList: []
     };
   },
   created(){
@@ -251,6 +259,11 @@ export default {
     }else{
           this.loggedId = false;
     }
+
+    axios.get('category/list').then((result)=>{
+      this.categoryList = result.data.data.list;
+    });
+
   },
   components: {
     LoginModal,
