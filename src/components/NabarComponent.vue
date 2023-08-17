@@ -195,7 +195,7 @@
                     <span v-for="childList in category.child" :key="childList.id">
                       <router-link class="dropdown-item" :to="{
                         name: 'category',
-                        params: { name: childList.slug },
+                        params: { sub_category: childList.slug, category: category.slug },
                         }">{{childList.name}}</router-link>                       
                     </span>
                       

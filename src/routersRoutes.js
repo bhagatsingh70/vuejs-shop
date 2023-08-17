@@ -23,7 +23,7 @@ const routes=[
     {
         name: "category",
         component:CategoryPage,
-        path:'/category/:name'
+        path:'/category/:category/:sub_category'
     },
 ];
 
